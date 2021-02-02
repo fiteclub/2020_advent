@@ -30,3 +30,15 @@ def build_table(input_array)
   t.rows = input_array.map { |n| colorarray(n) }
   end
 end
+
+def get_data(filename, type = 'raw')
+  input_data = File.read(filename)
+  case type
+  when 'array' then
+    input_data.split("\n")
+  when 'raw'
+    input_data
+  else
+    input_data
+  end
+end
