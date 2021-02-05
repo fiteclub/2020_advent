@@ -140,32 +140,22 @@ RSpec.describe "Part Two" do
 
   it "returns invalid if hair color (hcl) does not contain a valid hex color" do
     expect(testlist3.list[12][:hcl].match(/^#(?:[0-9a-fA-F]{3}){1,2}$/).to_s).to_not eq(testlist3.list[12][:hcl])
+    expect(testlist3.list[13][:hcl].match(/^#(?:[0-9a-fA-F]{3}){1,2}$/).to_s).to_not eq(testlist3.list[13][:hcl])
     expect(testlist3.is_valid(testlist3.list[12])).to be false
+    expect(testlist3.is_valid(testlist3.list[13])).to be false
   end
-  # it "returns invalid if missing expiration year (eyr)" do
-  #   expect(testlist2.is_valid(testlist2.list[3])).to be false
-  # end
 
-  # it "returns invalid if missing height (hgt)" do
-  #   expect(testlist2.is_valid(testlist2.list[4])).to be false
-  # end
+  it "returns invalid if eye color (ecl) not in list of approved descriptions" do
+    valid_ecl_list = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
+    expect(valid_ecl_list.include?(testlist3.list[14][:ecl])).to be false
+    expect(testlist3.is_valid(testlist3.list[14])).to be false
+  end
 
-  # it "returns invalid if missing hair color (hcl)" do
-  #   expect(testlist2.is_valid(testlist2.list[5])).to be false
-  # end
-
-  # it "returns invalid if missing eye color (ecl)" do
-  #   expect(testlist2.is_valid(testlist2.list[6])).to be false
-  # end
-  
-  # it "returns invalid if missing passport id (pid)" do
-  #   expect(testlist2.is_valid(testlist2.list[7])).to be false
-  # end
-
-  # it "returns valid if missing country id (cid)" do
-  #   expect(testlist2.is_valid(testlist2.list[8])).to eq(true)
-  # end
-
-
+  it "returns invalid if passport id (pid) is not none-digits including zeroes" do
+    expect(testlist3.list[15][:pid].match(/^\d{9}$/).to_s).to_not eq(testlist3.list[15][:pid])
+    expect(testlist3.list[16][:pid].match(/^\d{9}$/).to_s).to_not eq(testlist3.list[16][:pid])
+    expect(testlist3.is_valid(testlist3.list[15])).to be false
+    expect(testlist3.is_valid(testlist3.list[16])).to be false
+  end
 
 end

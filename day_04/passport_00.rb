@@ -60,25 +60,40 @@ class PassportList
 
   def new_validate(passport)
     old_result = old_validate(passport)
+    valid_ecl = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
     if old_result == false
       return false
-    elsif passport[:byr].to_i < 1920 || passport[:byr].to_i > 2002
+    elsif passport[:byr].to_i < 1920 ||
+          passport[:byr].to_i > 2002
       return false
-    elsif passport[:iyr].to_i < 2010 || passport[:iyr].to_i > 2020
+    elsif passport[:iyr].to_i < 2010 ||
+      passport[:iyr].to_i > 2020
       return false
-    elsif passport[:eyr].to_i < 2020 || passport[:eyr].to_i > 2030
+    elsif passport[:eyr].to_i < 2020 ||
+      passport[:eyr].to_i > 2030
       return false
-    elsif passport[:hgt].count('in') == 0 && passport[:hgt].count('cm') == 0
+    elsif passport[:hgt].count('in').zero? && 
+          passport[:hgt].count('cm').zero?
       return false
-    elsif passport[:hgt].count('in') == 0 && passport[:hgt].count('cm') > 0
-      if passport[:hgt].scan(/^[0-9]*/).first.to_i < 150 || passport[:hgt].scan(/^[0-9]*/).first.to_i > 193
-        return false
-      end
-    elsif passport[:hgt].count('in') > 0 && passport[:hgt].count('cm') == 0
-      if passport[:hgt].scan(/^[0-9]*/).first.to_i < 59 || passport[:hgt].scan(/^[0-9]*/).first.to_i > 76
-        return false
-      end
-    elsif passport[:hcl].match(/^#(?:[0-9a-fA-F]{3}){1,2}$/).to_s == passport[:hcl]
+    elsif passport[:hgt].count('in').zero? &&
+          passport[:hgt].count('cm').positive? &&
+          (
+            passport[:hgt].scan(/^[0-9]*/).first.to_i < 150 ||
+            passport[:hgt].scan(/^[0-9]*/).first.to_i > 193
+          )
+      return false
+    elsif passport[:hgt].count('in').positive? && 
+          passport[:hgt].count('cm').zero? &&
+          (
+            passport[:hgt].scan(/^[0-9]*/).first.to_i < 59 ||
+            passport[:hgt].scan(/^[0-9]*/).first.to_i > 76
+          )
+      return false
+    elsif !(passport[:hcl].match(/^#(?:[0-9a-fA-F]{3}){1,2}$/).to_s == passport[:hcl])
+      return false
+    elsif !valid_ecl.include?(passport[:ecl])
+      return false
+    elsif passport[:pid].match(/^\d{9}$/).to_s != passport[:pid]
       return false
     else
       return true
@@ -100,6 +115,7 @@ class PassportList
   end
 
   def doscan
+    @valid = count_valid
     scan_count = @list.count
     scan_valid = @valid
     puts "#{Rainbow(scan_count).blue.bright} passports scanned."
@@ -107,13 +123,3 @@ class PassportList
   end
 
 end
-
-
-# class Passport
-#   attr_accessor :byr, :iyr, :eyr, :hgt, :hcl, :ecl, :pid, :cid, :valid
-
-#   def initialize
-#     { byr: '', iyr: '', eyr: '', hgt: '', hcl: '', ecl: '', pid: '', cid: ''}
-#   end
-
-# end
