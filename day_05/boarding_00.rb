@@ -42,6 +42,7 @@ class BoardingPass
 end
 
 class BoardingPassList < Array
+  attr_accessor :comparison_array
   def initialize(array)
     Array.new(build_list(array))
     @comparison_array = Array.new
@@ -72,8 +73,14 @@ class BoardingPassList < Array
     max.to_s.to_i(2)
   end
 
+  def minseat
+    min.to_s.to_i(2)
+  end
+
   def emptyseat
-    
+    ref_array = (minseat..maxseat).to_a
+    sorted_self = self.each.map{ |bp| bp.seat }.sort
+    ref_array - sorted_self
   end
 end
 

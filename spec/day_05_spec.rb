@@ -2,19 +2,7 @@ require_relative '../day_05/boarding_00'
 require_relative '../helpers'
 
 testdata = BoardingPassList.new(get_data('day_05/test_input.txt', type = 'array'))
-testempty = BoardingPassList.new(int_to_boarding_code([101,102,104,107,108]))
-
-
-
-# first tier
-# F 0 - 63
-# B 64 - 127
-
-# second tier
-# FF 0 - 63, 0 - 31
-# FB 0 - 63, 32 - 63
-# BF 64 - 127, 64 - 95
-# BB 64 - 127, 96 - 127
+testempty = BoardingPassList.new(int_to_boarding_code([101, 102, 104, 107, 108]))
 
 RSpec.describe 'BoardingPass class' do
   it 'converts to binary' do
@@ -50,7 +38,7 @@ RSpec.describe 'BoardingPassList class' do
   end
 
   it 'finds missing values between min and max' do
-    expect(testempty.emptyseat).to eq([103,105,106])
+    expect(testempty.emptyseat).to eq([103, 105, 106])
   end
 
 end

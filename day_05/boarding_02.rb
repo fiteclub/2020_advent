@@ -4,7 +4,4 @@ require_relative 'boarding_00'
 
 data = get_data("input.txt", type = "array")
 b = BoardingPassList.new(data)
-
-
-binding.pry
-puts
+showempty(b.emptyseat)
