@@ -1,14 +1,8 @@
 #!/usr/bin/ruby
 require_relative '../helpers'
 
-## 0-127 (128) rows, 0-7 (8) columns
-## F,L == 0
-## B,R == 1
-## convert to binary BFFFBBFRRR == 1000110111 == 567
-
 class BoardingPass
-  attr_accessor :bin, :position, :seat, :row, :column
-
+  attr_accessor :bin, :binstring, :column, :position, :row, :seat
   def initialize(string)
     @position = string
     @binstring = parse_to_binary(string)
@@ -45,29 +39,41 @@ class BoardingPass
   def seat
     @binstring.to_i(2)
   end
-
 end
 
 class BoardingPassList < Array
-  attr_accessor :list
   def initialize(array)
-    @list = Array.new
-    build_list(array)
+    Array.new(build_list(array))
+    @comparison_array = Array.new
+    build_comparison_array
   end
 
   def build_list(input_array)
     input_array.each do |boarding_pass_string|
-      @list << BoardingPass.new(boarding_pass_string)
+      self << BoardingPass.new(boarding_pass_string)
     end
   end
 
+  def build_comparison_array
+    self.each do |boardingpass|
+      @comparison_array << boardingpass.bin
+    end
+  end
+
+  def max
+    @comparison_array.max
+  end
+
+  def min
+    @comparison_array.min
+  end
+
+  def maxseat
+    max.to_s.to_i(2)
+  end
 end
 
-
-
-data = get_data("test_input.txt", type = "array")
-b = BoardingPass.new(data[0])
-
-
-binding.pry
-puts 'end'
+def showmax(num_passes, maximum)
+  puts "#{Rainbow(num_passes).blue.bright} boarding passes."
+  puts "Highest seat: #{Rainbow(maximum).green.bright}"
+end

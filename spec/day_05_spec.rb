@@ -36,7 +36,7 @@ RSpec.describe 'BoardingPass class' do
   end
 
   it 'identifies the seat id' do
-    expect(testdata[0].seat).to eq(457)
+    expect(testdata[0].seat).to eq(357)
     expect(testdata[1].seat).to eq(567)
     expect(testdata[2].seat).to eq(119)
     expect(testdata[3].seat).to eq(820)
