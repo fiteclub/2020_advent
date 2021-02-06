@@ -40,7 +40,6 @@ RSpec.describe 'BoardingPassList class' do
   it 'finds missing values between min and max' do
     expect(testempty.emptyseat).to eq([103, 105, 106])
   end
-
 end
 
 
