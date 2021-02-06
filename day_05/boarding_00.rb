@@ -83,8 +83,31 @@ def base_ten_to_binary_string(int_array)
   end
 end
 
-def binary_string_to_boarding_string(binary_string_array)
-  binary_string_array
+def binary_to_boarding_code(binary_string_array)
+  binary_string_array.map do |string|
+    newstring = string.split('').each_with_index.map do |digit, idx|
+      if
+        digit == '0' && idx < 7
+        "F"
+      elsif
+        digit == '1' && idx < 7
+        "B"
+      elsif
+        digit == '0' && idx >= 7
+        "F"
+      elsif
+        digit == '1' && idx >= 7
+        "R"
+      else
+        return "error!"
+      end
+    end
+    newstring.join()
+  end
+end
+
+def int_to_boarding_code(int_array)
+  binary_to_boarding_code(base_ten_to_binary_string(int_array))
 end
 
 def showmax(num_passes, maximum)
