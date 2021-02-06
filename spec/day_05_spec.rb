@@ -1,8 +1,9 @@
 require_relative '../day_05/boarding_00'
 require_relative '../helpers'
 
-fetchdata = get_data("day_05/test_input.txt", type = "array")
-testdata = BoardingPassList.new(fetchdata)
+testdata = BoardingPassList.new(get_data("day_05/test_input.txt", type = "array"))
+testempty = BoardingPassList.new(["0000001000", "0000001001", "0000001011", "0000001100", "0000001111"])
+
 
 
 # first tier
@@ -16,23 +17,9 @@ testdata = BoardingPassList.new(fetchdata)
 # BB 64 - 127, 96 - 127
 
 RSpec.describe 'BoardingPass class' do
-  # bptest = BoardingPass.new(testdata[0])
-  # it 'creates a new boarding pass list object' do
-  # end
-
-  # it 'identifies the first range' do
-  #   expect(bptest.range(0).min).to eq(0)
-  #   expect(bptest.range(0).max).to eq(63)
-  # end
-
-  # it 'identifies the second range' do
-  #   expect(bptest.range(1).min).to eq(32)
-  #   expect(bptest.range(1).max).to eq(63)
-  # end
-
   it 'converts to binary' do
-    expect(testdata[0].bin).to.eq(0101100101)
-    expect(testdata[1].bin).to.eq(1000110111)
+    expect(testdata[0].bin).to eq("0101100101".to_i)
+    expect(testdata[1].bin).to eq("1000110111".to_i)
   end
 
   it 'identifies the seat id' do
@@ -55,9 +42,35 @@ RSpec.describe 'BoardingPass class' do
     expect(testdata[2].column).to eq(7)
     expect(testdata[3].column).to eq(4)
   end
+end
+
+RSpec.describe 'BoardingPassList class' do
+  it 'find the maximum seat number' do
+    expect(testdata.maxseat).to eq(820)
+  end
+
+  it 'finds missing values between min and max' do
+    expect(testempty.emptyseat[0]).to eq(10)
+    expect(testempty.emptyseat[1]).to eq()
+  end
 
 end
 
+
+RSpec.describe 'base_ten_to_binary' do
+  it 'returns an array of 10-digit binary strings, given an array of integers' do
+    expect(base_ten_to_binary_string((100..102).to_a)).to eq(["0001100100", "0001100101", "0001100110"])
+  end
+end
+
+RSpec.describe 'binary_to_boarding_code' do
+  it 'returns an array of boarding codes, given an array of binary numbers' do
+    
+    expect(binary_to_boarding_code(base_ten_to_binary_string([567,119]))[0]).to eq(
+      ["BFFFBBFRRR", "FFFBBBFRRR"]
+    )
+  end
+end
 
 # RSpec.describe "PassportList class" do
 #   testlist = PassportList.new(data)

@@ -71,9 +71,28 @@ class BoardingPassList < Array
   def maxseat
     max.to_s.to_i(2)
   end
+
+  def emptyseat
+    
+  end
+end
+
+def base_ten_to_binary_string(int_array)
+  int_array.map do |n|
+    "%010d" % n.to_s(2).to_i
+  end
+end
+
+def binary_string_to_boarding_string(binary_string_array)
+  binary_string_array
 end
 
 def showmax(num_passes, maximum)
   puts "#{Rainbow(num_passes).blue.bright} boarding passes."
   puts "Highest seat: #{Rainbow(maximum).green.bright}"
+end
+
+def showempty(empty_seat_array)
+  puts "#{Rainbow(empty_seat_array.count).blue.bright} empty seats."
+  puts "Including: #{Rainbow(empty_seat_array).green.bright}"
 end
