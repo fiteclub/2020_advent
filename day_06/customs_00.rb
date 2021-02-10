@@ -27,6 +27,9 @@ class CustomsGroup
     totals.count
   end
 
+  def allyes
+  end
+
   def each(&block)
     @passengers.each(&block)
   end
