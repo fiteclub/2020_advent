@@ -13,14 +13,14 @@ class CustomsGroup
   end
 
   def totals
-    h = {}
-    h.default = 0
+    totals_hash = {}
+    totals_hash.default = 0
     @passengers.each do |passenger|
       passenger.split('').each do |letter|
-        h[letter.to_sym] += 1
+        totals_hash[letter.to_sym] += 1
       end
     end
-    h
+    totals_hash
   end
 
   def yes
@@ -28,6 +28,10 @@ class CustomsGroup
   end
 
   def allyes
+    yes = totals.select do |key, count|
+      count == @passengers.count
+    end
+    yes.count
   end
 
   def each(&block)
@@ -44,13 +48,14 @@ class CustomsPlane
     @plane = plane_data
     @groups = []
     build_plane(plane_data)
+    @yes_scope = 'yes'
   end
 
   def build_plane(input_array)
     input_array.split("\n\n").each do |group|
-      g = CustomsGroup.new
-      g.passengers = group.split("\n")
-      @groups << g
+      shovel_group = CustomsGroup.new
+      shovel_group.passengers = group.split("\n")
+      @groups << shovel_group
     end
   end
 
@@ -68,9 +73,15 @@ class CustomsPlane
   def saidyes
     yes_count = 0
     @groups.each do |group|
-      yes_count += group.yes
+      yes_count += group.send("#{@yes_scope}")
     end
+    @yes_scope = 'yes'
     yes_count
+  end
+
+  def allsaidyes
+    @yes_scope = 'allyes'
+    saidyes
   end
 
 end
