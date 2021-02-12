@@ -37,7 +37,6 @@ class CustomsGroup
   def each(&block)
     @passengers.each(&block)
   end
-
 end
 
 class CustomsPlane
@@ -83,5 +82,4 @@ class CustomsPlane
     @yes_scope = 'allyes'
     saidyes
   end
-
 end
