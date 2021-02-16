@@ -1,7 +1,8 @@
 #!/usr/bin/ruby
 require_relative '../helpers'
-require 'multiset'
 
+# Depth First Search concepts and code from Angel Jose
+# https://youtu.be/h6uxVcE-2M8
 
 class Bag
   include Enumerable
@@ -12,19 +13,14 @@ class Bag
     @contents = contents
   end
 
-  def has_inside(baglist, bag_name, searchlist)
-    searched = searchlist
-    searched << @name
-    puts "Searching #{@name} for #{bag_name}"
-    return self if bag_name == @name
-    puts "Searching contents of #{@name} for #{bag_name}"
+  def has_inside(baglist, bag_name, accumulated_search_list = [])
+    searched_bags = accumulated_search_list
+    searched_bags << @name
+    return searched_bags if bag_name == @name
     contents.keys.each do |inside_bag|
-      puts "--- searching #{baglist[inside_bag].name} for #{bag_name}..."
-      found_bag = baglist[inside_bag].has_inside(baglist, bag_name, searched)
+      found_bag = baglist[inside_bag].has_inside(baglist, bag_name, searched_bags)
       if !found_bag.nil?
-        searched << bag_name
-        puts searched.to_s
-        searched = []
+        found_bag = searched_bags
       end
       return found_bag unless found_bag.nil?
     end
@@ -63,11 +59,18 @@ class BagHandler
   end
 
   def search(target_bag)
+    return nil unless @list.keys.include?(target_bag.to_sym)
     return_array = []
-    @list.each_with_object({}) do |object|
+    @list.each do |object|
       return_array << object[1].has_inside(@list, target_bag, [])
     end
-    return_array
+    if return_array.compact.length == 1 || return_array.empty?
+      return nil
+    else
+      return_array = return_array.compact
+      return_array.delete_at(return_array.index(return_array.find { |v| v[0] == target_bag }))
+      return_array
+    end
   end
 
   def each(&block)
