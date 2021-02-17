@@ -13,6 +13,8 @@ class Bag
     @contents = contents
   end
 
+# Refactor this to reproduce the same output
+# @contents.keys.map { |color| color.to_s }
   def has_inside(baglist, bag_name, accumulated_search_list = [])
     searched_bags = accumulated_search_list
     searched_bags << @name
@@ -71,6 +73,26 @@ class BagHandler
       return_array.delete_at(return_array.index(return_array.find { |v| v[0] == target_bag }))
       return_array
     end
+  end
+
+  def capacity(target_bag)
+    target_bag = target_bag.to_sym if target_bag.class == String
+    sum_interior(target_bag)
+  end
+
+  def sum_bag(bag)
+    return 1 if list[bag].contents.empty?
+
+    sum_interior(bag) + 1
+  end
+
+  def sum_interior(bag)
+    container_sum = 0
+    list[bag].contents.each do |inside_name, inside_count|
+      inside_bag_capacity = sum_bag(inside_name) * inside_count
+      container_sum += inside_bag_capacity
+    end
+    container_sum
   end
 
   def each(&block)

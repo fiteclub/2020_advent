@@ -2,6 +2,7 @@ require_relative '../day_07/bag_00'
 require_relative '../helpers'
 
 test_handler = BagHandler.new(get_data('day_07/test_input.txt', 'array'))
+test_handler2 = BagHandler.new(get_data('day_07/test_input_2.txt', 'array'))
 test_bag = test_handler.list.first[1]
 
 RSpec.describe 'Bag class' do
@@ -26,6 +27,10 @@ RSpec.describe 'Bag class' do
   it 'returns nil if a given bag cannot be found inside' do
     expect(test_bag.has_inside(test_handler.list, 'hideous_green')).to be nil
   end
+
+  # it 'returns the sum of all bags contained within a given bag' do
+  #   expect(test_bag.sum_inside(test_handler.list, 'shiny_gold')).to eq(126)
+  # end
 end
 
 
@@ -54,9 +59,17 @@ RSpec.describe 'BagHandler class' do
     ])
   end
 
-  test_handler.list[:awful_green] = Bag.new('awful_green',{})
   it 'searches for a given bag and returns nil if the bag is not found in any other bags' do
+    test_handler.list[:awful_green] = Bag.new('awful_green',{})
     expect(test_handler.search('awful_green')).to be nil
   end
 
+  it 'returns the sum of all bags contained within a given bag' do
+    expect(test_handler.capacity('shiny_gold')).to eq(32)
+    # expect(test_handler2.capacity('shiny_gold')).to eq(126)
+  end
+
+  it 'returns the sum of all bags contained within a given bag' do
+    expect(test_handler2.capacity('shiny_gold')).to eq(126)
+  end
 end
