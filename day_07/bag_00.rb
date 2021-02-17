@@ -66,13 +66,10 @@ class BagHandler
     @list.each do |object|
       return_array << object[1].has_inside(@list, target_bag, [])
     end
-    if return_array.compact.length == 1 || return_array.empty?
-      return nil
-    else
-      return_array = return_array.compact
-      return_array.delete_at(return_array.index(return_array.find { |v| v[0] == target_bag }))
-      return_array
-    end
+    return nil if return_array.compact.length == 1 || return_array.empty?
+    return_array = return_array.compact
+    return_array.delete_at(return_array.index(return_array.find { |v| v[0] == target_bag }))
+    return_array
   end
 
   def capacity(target_bag)
@@ -87,12 +84,9 @@ class BagHandler
   end
 
   def sum_interior(bag)
-    container_sum = 0
-    list[bag].contents.each do |inside_name, inside_count|
-      inside_bag_capacity = sum_bag(inside_name) * inside_count
-      container_sum += inside_bag_capacity
+    list[bag].contents.inject(0) do |accumulate, inside_bag|
+      accumulate + (sum_bag(inside_bag.to_a[0]) * inside_bag.to_a[1])
     end
-    container_sum
   end
 
   def each(&block)
