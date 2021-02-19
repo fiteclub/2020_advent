@@ -3,21 +3,23 @@ require_relative '../helpers'
 
 # An item in the BootList
 class BootItem
-  attr_accessor :action, :value, :ran, :string
+  attr_accessor :action, :ran, :runcount, :string, :value
 
   def initialize(string)
     @string = string
     @action = string.split(' ')[0]
     @value = string.split(' ')[1].to_i
     @ran = false
+    @runcount = 0
   end
 
   def run
+    @runcount += 1
     @ran = true
   end
 end
 
-# List of instructions -- BootItems
+# List of instructions; BootItems objects
 class BootList < Array
 
   def self.call
@@ -37,25 +39,31 @@ end
 
 # Traverses the BootList, interpreting the instructions
 class BootParser
-  attr_accessor :accumulator, :exec_order
+  attr_accessor :accumulator, :log, :position, :bootlist
 
-  def initialize
-    @exec_order = []
+  def initialize(boot_list)
+    @bootlist = boot_list
+    @log = []
     @accumulator = 0
     @position = 0
   end
 
-  def parse(list)
-    until list[@position].executed?
-      read(list[@position])
+  def parse
+    until bootlist[@position].ran
+      read(bootlist[@position])
     end
-    @position
+    @log << {pos: @position, acc: @accumulator, ran: false}
+    log.last
   end
 
   def read(item)
+    log_item = {}
+    log_item[:pos] = @position
     exec(item.action, item.value)
     item.run
-    @exec_order << @position
+    log_item[:acc] = @accumulator
+    log_item[:ran] = true
+    @log << log_item
   end
 
   def exec(action, value)
@@ -65,7 +73,7 @@ class BootParser
     when 'jmp'
       jmp(value)
     when 'nop'
-      nop(value)
+      nop
     end
   end
 

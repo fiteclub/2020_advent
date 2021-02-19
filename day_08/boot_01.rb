@@ -3,9 +3,13 @@ require_relative '../helpers'
 require_relative 'boot_00'
 
 data = get_data("input.txt", 'array')
-# l = BootList.new(data)
+bootup = BootList.new(data)
+parser = BootParser.new(bootup)
+parser.parse
 
-binding.pry
-puts colorarray(['end'
+puts colorarray(['Before looping, the',
+                 :accumulator,
+                 'is',
+                 parser.log.last[:acc]
                  ])
   .join(' ')
