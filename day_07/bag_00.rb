@@ -13,22 +13,6 @@ class Bag
     @contents = contents
   end
 
-# Refactor this to reproduce the same output
-# @contents.keys.map { |color| color.to_s }
-  def has_inside(baglist, bag_name, accumulated_search_list = [])
-    searched_bags = accumulated_search_list
-    searched_bags << @name
-    return searched_bags if bag_name == @name
-    contents.keys.each do |inside_bag|
-      found_bag = baglist[inside_bag].has_inside(baglist, bag_name, searched_bags)
-      if !found_bag.nil?
-        found_bag = searched_bags
-      end
-      return found_bag unless found_bag.nil?
-    end
-    nil
-  end
-
   def each(&block)
     @contents.each(&block)
   end
@@ -49,8 +33,8 @@ class BagHandler
       bag_name = line[/^(.*?)(?= bag)/, 1].tr(' ', '_').to_s
       bag_contents = line[/[1-9].*(?=\.)/]
       new_bag_contents = {}
-      if !bag_contents.nil?
-        bag_contents.split(", ").each do |string|
+      unless bag_contents.nil?
+        bag_contents.split(', ').each do |string|
           interior_bag = string[/(?![0-9])[a-z].*(?= bag)/].tr(' ', '_').to_sym
           num_bags = string[/[0-9]*/].to_i
           new_bag_contents[interior_bag.to_sym] = num_bags
@@ -61,19 +45,27 @@ class BagHandler
   end
 
   def search(target_bag)
-    return nil unless @list.keys.include?(target_bag.to_sym)
-    return_array = []
-    @list.each do |object|
-      return_array << object[1].has_inside(@list, target_bag, [])
+    target_bag = symbol_guard(target_bag)
+    return_array = list.map do |object|
+      inspect_bag(object[0], target_bag)
     end
     return nil if return_array.compact.length == 1 || return_array.empty?
-    return_array = return_array.compact
-    return_array.delete_at(return_array.index(return_array.find { |v| v[0] == target_bag }))
-    return_array
+    return_array.map { |n| n if !n.nil? && n.length > 1 }.compact
+  end
+
+  def inspect_bag(bag, target_bag, accumulated_list = [])
+    accumulated_list << bag
+    return accumulated_list if bag == target_bag
+
+    list[bag].contents.keys.each do |inside_bag|
+      found_bag = inspect_bag(inside_bag, target_bag, accumulated_list)
+      return found_bag unless found_bag.nil?
+    end
+    nil
   end
 
   def capacity(target_bag)
-    target_bag = target_bag.to_sym if target_bag.class == String
+    target_bag = symbol_guard(target_bag)
     sum_interior(target_bag)
   end
 
@@ -84,9 +76,13 @@ class BagHandler
   end
 
   def sum_interior(bag)
-    list[bag].contents.inject(0) do |accumulate, inside_bag|
-      accumulate + (sum_bag(inside_bag.to_a[0]) * inside_bag.to_a[1])
+    list[bag].contents.inject(0) do |sum, inside_bag|
+      sum + (sum_bag(inside_bag.to_a[0]) * inside_bag.to_a[1])
     end
+  end
+
+  def symbol_guard(var)
+    var.to_sym if var.instance_of?(String)
   end
 
   def each(&block)

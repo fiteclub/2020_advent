@@ -27,7 +27,7 @@ end
 
 def build_table(input_array)
   Terminal::Table.new do |t|
-  t.rows = input_array.map { |n| colorarray(n) }
+    t.rows = input_array.map { |n| colorarray(n) }
   end
 end
 
